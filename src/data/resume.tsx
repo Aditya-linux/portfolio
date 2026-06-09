@@ -4,13 +4,19 @@ import { HomeIcon, NotebookIcon } from "lucide-react";
 export const DATA = {
   name: "Aditya Nishad",
   initials: "AN",
-  url: "https://www.adityajhaa.co/",
+  url: "https://adityanishad.space",
   location: "New Delhi, India",
   // locationLink: "https://www.google.com/maps/place/sanfrancisco",
   description:
-"Full Stack + AI + Blockchain - building and sharing on X.",
+`AI & Web3 Product Builder
+
+Building fintech, automation, and blockchain products.
+
+• Stellar Brand Ambassador
+• ₹20K+ Contribution Rewards
+• 3× Top Open Source Contributor`,
   summary:
-"I’m a Full Stack Developer building SaaS, AI-powered products, and blockchain applications. I’ve shipped across multiple startups and projects, was selected as a Stellar Brand Ambassador, made ₹20K+ in Stellar contributions, and I enjoy taking ideas from product thinking and UX to production-ready systems. Beyond coding, I like experimenting, sharing learnings, and contributing to the developer ecosystem.",
+"Building AI and Web3 products that solve real-world problems. Open-source contributor to Stellar, Stellar Brand Ambassador, and recipient of ₹20K+ in ecosystem rewards. Passionate about fintech, automation, and turning ideas into scalable products.",
 avatarUrl: "/profile.jpeg",
   skills: [
     "React",
@@ -117,7 +123,7 @@ avatarUrl: "/profile.jpeg",
       badges: [],
       location: "Mumbai, India",
       title: "Documentation Intern",
-      logoUrl: "",
+      logoUrl: "/rumicare.png",
       start: "3 Months",
       end: "",
       description:
@@ -128,7 +134,7 @@ avatarUrl: "/profile.jpeg",
       school: "Mumbai University",
       href: "",
       degree: "Bachelor of Technology in Computer Science and Engineering (CGPA: 8.70)",
-      logoUrl: "",
+      logoUrl: "/mumbaiuniversity.png",
       start: "2023",
       end: "2026",
     },
@@ -301,13 +307,127 @@ avatarUrl: "/profile.jpeg",
       video: "",
     },
   ],
+  hackathons: [
+    {
+      title: "IBM Dev Day: Bob Edition",
+      dates: "Apr 30 - May 3, 2026",
+      location: "Virtual",
+      description: "Participated in the IBM Dev Day virtual event and hackathon focusing on Building Intelligent Apps, Agent Patterns, MCP, and the Future of AI Native Design.",
+      image: "/bob.webp",
+      links: [
+        {
+          title: "Certificate",
+          icon: <Icons.globe className="size-3" />,
+          href: "/certificates/IBM Dev Day Bob Edition Certificates - Aditya Nishad.pdf",
+        }
+      ],
+    },
+    {
+      title: "AI Trading Agents Hackathon",
+      dates: "Mar 30 - Apr 12, 2026",
+      location: "Virtual",
+      description: "Successfully completed and submitted a solution based on AI/ML APIs, Anthropic Claude, and Codex on the lablab.ai platform.",
+      image: "/lablab.webp",
+      links: [
+        {
+          title: "Certificate",
+          icon: <Icons.globe className="size-3" />,
+          href: "/certificates/lablab.png",
+        }
+      ],
+    },
+    {
+      title: "Nasscom AI Code Sarathi",
+      dates: "Mar - Apr 2026",
+      location: "Virtual",
+      description: "Completed the AI-assisted Coding Workshop as part of Nasscom AI Code Sarathi and demonstrated competence through mandatory coursework.",
+      image: "/nasscom.webp",
+      links: [
+        {
+          title: "Certificate",
+          icon: <Icons.globe className="size-3" />,
+          href: "/certificates/nascomm.pdf",
+        }
+      ],
+    },
+    {
+      title: "Gen AI Exchange Hackathon",
+      dates: "Jan 14, 2026",
+      location: "Virtual",
+      description: "Contributed a prototype for 'Generative AI for Youth Mental Wellness' in the hackathon by Google Cloud, powered by Hack2skill.",
+      image: "/GoogleH2S.webp",
+      links: [
+        {
+          title: "Certificate",
+          icon: <Icons.globe className="size-3" />,
+          href: "/certificates/GenAI.pdf",
+        }
+      ],
+    },
+    {
+      title: "Build and Grow AI Hackathon 2.0",
+      dates: "2026",
+      location: "Mumbai",
+      description: "Active participation as a member of Team CloseStakx. An initiative by GDG Cloud Mumbai to foster problem-solving and innovation.",
+      image: "/GDG.webp",
+      links: [
+        {
+          title: "Certificate",
+          icon: <Icons.globe className="size-3" />,
+          href: "/certificates/gdg.jpg",
+        }
+      ],
+    },
+    {
+      title: "HackFusion 2026",
+      dates: "2026",
+      location: "Mumbai",
+      description: "Participated in the HackFusion 2026 Hackathon organized by Sardar Patel Institute of Technology (SPIT).",
+      image: "/spit.png",
+      links: [
+        {
+          title: "Certificate",
+          icon: <Icons.globe className="size-3" />,
+          href: "/certificates/hackfusion.jpg",
+        }
+      ],
+    },
+    {
+      title: "S.P.I.T Hackathon 2026",
+      dates: "2026",
+      location: "Mumbai",
+      description: "Participated in the S.P.I.T Hackathon 2026 organized by Sardar Patel Institute of Technology.",
+      image: "/spit.png",
+      links: [
+        {
+          title: "Certificate",
+          icon: <Icons.globe className="size-3" />,
+          href: "/certificates/spit.jpg",
+        }
+      ],
+    },
+    {
+      title: "Project Expo 2K25",
+      dates: "Nov 15, 2025",
+      location: "Mumbai",
+      description: "Participated in Project Expo 2K25 held at Rizvi College of Arts, Science & Commerce.",
+      image: "/2k25.webp",
+      links: [
+        {
+          title: "Certificate",
+          icon: <Icons.globe className="size-3" />,
+          href: "/certificates/Participation CertificateProject expo.pdf",
+        }
+      ],
+    }
+  ],
   achievements: [
     {
       title: "Prettiflow Grant Winner",
       dates: "2026",
       location: "Remote",
       description: "Won a grant of $10,000 worth of Prettiflow credits to upgrade and scale my personal projects.",
-      image: "/prettiflow.png",
+      image: "/prettiflowhd.png",
       links: [],
     },
     {

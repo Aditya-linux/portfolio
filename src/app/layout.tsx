@@ -18,10 +18,11 @@ export const metadata: Metadata = {
     default: DATA.name,
     template: `%s | ${DATA.name}`,
   },
-  description: DATA.description,
+  description: DATA.summary,
+  keywords: ["Aditya", "ADITYA", "Aditya Nishad", "aditya web3", "ADITYA web3", "AI and Web3 Builder", "Blockchain Developer", "Stellar Open Source Developer", "Fintech Developer"],
   openGraph: {
     title: `${DATA.name}`,
-    description: DATA.description,
+    description: DATA.summary,
     url: DATA.url,
     siteName: `${DATA.name}`,
     locale: "en_US",
