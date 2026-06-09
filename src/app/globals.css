@@ -73,6 +73,14 @@
     body {
       @apply bg-background text-foreground;
     }
+    ::selection {
+      background-color: black;
+      color: white;
+    }
+    .dark ::selection {
+      background-color: white;
+      color: black;
+    }
   }
 
   h3 code {
