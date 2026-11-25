@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CV aurora band</title>
+<style>html, body { margin: 0; } canvas { display: block; }</style>
+</head>
+<body>
+<canvas id="aurora"></canvas>
+<script>
+// Renders the site's dithercn aurora field to a canvas, evaluated on the CPU
+// and dithered with the same Bayer-8 matrix and palette as the site. The
+// build script screenshots this page at 2x print size for the CV band.
+const W = 1588, H = 336;
+const canvas = document.getElementById('aurora');
+canvas.width = W; canvas.height = H;
+const ctx = canvas.getContext('2d');
+const image = ctx.createImageData(W, H);
+
+// dithercn palette for the band: midnight, navy, mid blue, electric, white crest.
+const PALETTE = [
+  [2, 7, 10], [10, 42, 74], [14, 79, 128], [2, 151, 222], [255, 255, 255],
+];
+
+// Aurora uniforms (matches AuroraHero on the site, tuned for a shallow band:
+// the bright crest occupies the bottom ~30% so the name, headline and contact
+// block land on sparse, dark cells).
+const U = {
+  curtains: 3, height: 0.06, spread: 0.04, sway: 1, turbulence: 0.6,
+  rays: 8, length: 0.18, glow: 0.9, intensity: 0.9, shimmer: 0.2,
+  scale: 1, tilt: 0, drift: 0.25,
+};
+const TIME = 8;
+
+function fract(x) { return x - Math.floor(x); }
+function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
+function mix(a, b, t) { return a + (b - a) * t; }
+function smoothstep(a, b, x) { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
+
+function permute(x) { return ((x * 34 + 1) * x) % 289; }
+
+// The same 2D simplex noise the engine's GLSL_HELPERS defines.
+function snoise(vx, vy) {
+  const C = [0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439];
+  let i = Math.floor(vx + vy * C[1]);
+  let j = Math.floor(vy + vx * C[1]);
+  // floor(v + dot(v, C.yy)) = floor each of v.x + (v.x+v.y)*C.y
+  i = Math.floor(vx + (vx + vy) * C[1]);
+  j = Math.floor(vy + (vx + vy) * C[1]);
+  const x0x = vx - i + (i + j) * C[0];
+  const x0y = vy - j + (i + j) * C[0];
+  const i1x = x0x > x0y ? 1 : 0;
+  const i1y = x0x > x0y ? 0 : 1;
+  const x12x = x0x + C[0] - i1x;
+  const x12y = x0y + C[0] - i1y;
+  const x12z = x0x + C[2];
+  const x12w = x0y + C[2];
+  i = ((i % 289) + 289) % 289;
+  j = ((j % 289) + 289) % 289;
+  const p0 = permute(permute(j) + i);
+  const p1 = permute(permute(j + i1y) + i + i1x);
+  const p2 = permute(permute(j + 1) + i + 1);
+  let m0 = Math.max(0.5 - (x0x * x0x + x0y * x0y), 0);
+  let m1 = Math.max(0.5 - (x12x * x12x + x12y * x12y), 0);
+  let m2 = Math.max(0.5 - (x12z * x12z + x12w * x12w), 0);
+  m0 *= m0; m1 *= m1; m2 *= m2;
+  m0 *= m0; m1 *= m1; m2 *= m2;
+  const xx0 = 2 * fract(p0 * C[3]) - 1;
+  const xx1 = 2 * fract(p1 * C[3]) - 1;
+  const xx2 = 2 * fract(p2 * C[3]) - 1;
+  const h0 = Math.abs(xx0) - 0.5, h1 = Math.abs(xx1) - 0.5, h2 = Math.abs(xx2) - 0.5;
+  const o0 = Math.floor(xx0 + 0.5), o1 = Math.floor(xx1 + 0.5), o2 = Math.floor(xx2 + 0.5);
+  const a0 = xx0 - o0, a1 = xx1 - o1, a2 = xx2 - o2;
+  m0 *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h0 * h0);
+  m1 *= 1.79284291400159 - 0.85373472095314 * (a1 * a1 + h1 * h1);
+  m2 *= 1.79284291400159 - 0.85373472095314 * (a2 * a2 + h2 * h2);
+  const g0 = a0 * x0x + h0 * x0y;
+  const g1 = a1 * x12x + h1 * x12y;
+  const g2 = a2 * x12z + h2 * x12w;
+  return 130 * (m0 * g0 + m1 * g1 + m2 * g2);
+}
+
+function fbm(px, py) {
+  let sum = 0, amp = 0.5;
+  for (let i = 0; i < 4; i++) {
+    sum += amp * snoise(px, py);
+    const nx = (0.8 * px + 0.6 * py) * 2.02 + 11.3;
+    const ny = (-0.6 * px + 0.8 * py) * 2.02 + 4.7;
+    px = nx; py = ny;
+    amp *= 0.5;
+  }
+  return clamp(0.5 + 0.5 * sum / 0.9375, 0, 1);
+}
+
+// The aurora field from src/components/dithercn/aurora.tsx, direction "up",
+// no mask, evaluated at a still time.
+function field(uvx, uvy, t) {
+  const aspect = W / H;
+  const px = (uvx - 0.5) * aspect;
+  const py = uvy; // p.y - 0.5 + 0.5 with zero tilt and no flip
+  const x = px * U.scale + t * U.drift * 0.04;
+  const decayBase = mix(15, 2.2, U.length);
+  let light = 0;
+  for (let i = 0; i < 6; i++) {
+    const fi = i;
+    if (fi >= U.curtains) break;
+    const depth = fi / Math.max(U.curtains - 1, 1);
+    const edge = U.height + fi * U.spread
+      + U.sway * 0.11 * snoise(x * 0.55 + fi * 3.1, t * 0.035 + fi * 1.7)
+      + U.turbulence * 0.05 * snoise(x * 2.1 - fi * 1.3, t * 0.07 + fi);
+    const above = py - edge;
+    const curtain = above > 0
+      ? Math.exp(-above * decayBase * (1 + fi * 0.4))
+      : Math.exp(above * 48);
+    const bend = snoise(x * 0.8, t * 0.03 + fi) * (0.25 + 0.35 * U.sway);
+    const rx = (x + bend) * U.rays;
+    let rays = mix(0.2, 1, smoothstep(0.25, 0.75, fbm(rx + fi * 9, t * 0.045 + fi)));
+    rays *= 0.75 + 0.25 * snoise(rx * 3.2, fi * 4 + t * 0.02);
+    const patch = mix(0.3, 1, smoothstep(0.25, 0.7, fbm(x * 0.45 + fi * 5, t * 0.02 + fi * 2)));
+    const rim = Math.exp(-Math.abs(above) * 34) * U.glow;
+    const haze = above > 0 ? Math.exp(-above * 5) * 0.09 : Math.exp(above * 14) * 0.05;
+    light += (curtain * rays + rim * (0.5 + 0.5 * rays) + haze) * patch * mix(1, 0.5, depth);
+  }
+  const ripple = 0.5 + 0.5 * Math.sin(t * 0.8 + px * 4 + 2 * snoise(px * 2.5, t * 0.15));
+  return (1 - Math.exp(-light * 1.25)) * U.intensity * (1 - U.shimmer * 0.45 * ripple);
+}
+
+// Bayer-8 ranks, generated the same way as src/lib/dither/matrices.ts.
+const ranks = new Uint8Array(64);
+for (let y = 0; y < 8; y++) {
+  for (let x = 0; x < 8; x++) {
+    let rank = 0;
+    for (let bit = 1; bit < 8; bit *= 2) {
+      const xBit = Math.floor(x / bit) % 2;
+      const yBit = Math.floor(y / bit) % 2;
+      rank = rank * 4 + 2 * ((xBit + yBit) % 2) + yBit;
+    }
+    ranks[y * 8 + x] = rank;
+  }
+}
+
+const STEPS = 64, COLORS = PALETTE.length;
+for (let y = 0; y < H; y++) {
+  for (let x = 0; x < W; x++) {
+    const uvx = (x + 0.5) / W;
+    const uvy = 1 - (y + 0.5) / H; // canvas y runs down; GLSL uv runs up
+    let tone = clamp(field(uvx, uvy, TIME), 0, 1);
+    tone = Math.floor(tone * STEPS + 0.5) / STEPS;
+    const scaled = tone * (COLORS - 1);
+    let index = Math.floor(scaled);
+    const threshold = (ranks[(y % 8) * 8 + (x % 8)] + 0.5) / STEPS;
+    if (scaled - index > threshold) index += 1;
+    index = Math.min(index, COLORS - 1);
+    const [r, g, b] = PALETTE[index];
+    const o = (y * W + x) * 4;
+    image.data[o] = r; image.data[o + 1] = g; image.data[o + 2] = b; image.data[o + 3] = 255;
+  }
+}
+ctx.putImageData(image, 0, 0);
+</script>
+</body>
+</html>

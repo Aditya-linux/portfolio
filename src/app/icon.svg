@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .star { transform: scale(.74); transform-origin: 32px 32px; }
+    @media (prefers-color-scheme: dark) {
+      .tile { display: none; }
+      .star { transform: none; }
+    }
+  </style>
+  <defs>
+    <radialGradient id="tile" cx=".5" cy=".3" r=".8">
+      <stop offset="0" stop-color="#26221c" />
+      <stop offset="1" stop-color="#0e0d0b" />
+    </radialGradient>
+    <linearGradient id="ivory" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffaee" />
+      <stop offset="1" stop-color="#e8dcc2" />
+    </linearGradient>
+  </defs>
+  <g class="tile">
+    <rect width="64" height="64" rx="16" fill="url(#tile)" />
+    <rect x=".5" y=".5" width="63" height="63" rx="15.5" fill="none" stroke="#f8f1dc" stroke-opacity=".12" />
+  </g>
+  <path class="star" d="M32 2C35.64 20.9 41.62 27.8 58 32C41.62 36.2 35.64 43.1 32 62C28.36 43.1 22.38 36.2 6 32C22.38 27.8 28.36 20.9 32 2Z" fill="url(#ivory)" />
+</svg>

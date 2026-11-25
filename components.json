@@ -4,16 +4,21 @@
   "rsc": true,
   "tsx": true,
   "tailwind": {
-    "config": "tailwind.config.ts",
-    "css": "src/app/globals.css",
+    "config": "",
+    "css": "src/style.css",
     "baseColor": "neutral",
-    "cssVariables": true,
-    "prefix": ""
+    "cssVariables": false
   },
   "aliases": {
     "components": "@/components",
-    "utils": "@/lib/utils",
     "ui": "@/components/ui",
-    "hooks": "@/hooks"
+    "lib": "@/lib",
+    "hooks": "@/hooks",
+    "utils": "@/lib/utils"
+  },
+  "registries": {
+    "@spell": "https://spell.sh/r/{name}.json",
+    "@fancy": "https://fancycomponents.dev/r/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}"
   }
 }

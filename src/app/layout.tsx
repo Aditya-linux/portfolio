@@ -1,75 +1,61 @@
-import Navbar from "@/components/navbar";
-import { ThemeProvider } from "@/components/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { DATA } from "@/data/resume";
-import { cn } from "@/lib/utils";
-import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google";
-import "./globals.css";
-import { Analytics } from "@vercel/analytics/next"
-const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import { siteUrl } from '../site';
+import { SiteShell } from '../components/site-shell';
+import 'lenis/dist/lenis.css';
+import '../style.css';
+
+const dmSans = localFont({
+  src: [
+    {
+      path: '../../node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2',
+      weight: '100 1000',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-dm-sans',
+  display: 'swap',
+  preload: true,
+});
+const geistMono = localFont({
+  src: [
+    {
+      path: '../../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2',
+      weight: '100 900',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-geist-mono',
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(DATA.url),
-  title: {
-    default: DATA.name,
-    template: `%s | ${DATA.name}`,
-  },
-  description: DATA.summary,
-  keywords: ["Aditya", "ADITYA", "Aditya Nishad", "aditya web3", "ADITYA web3", "AI and Web3 Builder", "Blockchain Developer", "Stellar Open Source Developer", "Fintech Developer"],
+  title: 'Aditya Nishad | AI & Web3 product builder',
+  description: 'Aditya Nishad builds AI and Web3 products across fintech, automation and blockchain.',
+  metadataBase: new URL(siteUrl),
+  authors: [{ name: 'Aditya Nishad', url: siteUrl }],
+  robots: { follow: true },
   openGraph: {
-    title: `${DATA.name}`,
-    description: DATA.summary,
-    url: DATA.url,
-    siteName: `${DATA.name}`,
-    locale: "en_US",
-    type: "website",
+    type: 'website',
+    url: siteUrl,
+    siteName: 'Aditya Nishad',
+    title: 'Aditya Nishad | AI & Web3 product builder',
+    description: 'Aditya Nishad builds AI and Web3 products across fintech, automation and blockchain.',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Aditya Nishad, AI and Web3 product builder' }],
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  twitter: {
-    title: `${DATA.name}`,
-    card: "summary_large_image",
-  },
-  verification: {
-    google: "",
-    yandex: "",
-  },
+  twitter: { card: 'summary_large_image', creator: '@AdityaNishad987' },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const themeBoot = `(function(){try{var k='aditya-portfolio-theme';var s=localStorage.getItem(k);var t=s==='dark'||s==='light'?s:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;}catch(e){}})();`;
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased max-w-2xl mx-auto py-12 sm:py-24 px-6",
-          fontSans.variable
-        )}
-      >
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <TooltipProvider delayDuration={0}>
-            {children}
-            <Navbar />
-          </TooltipProvider>
-        </ThemeProvider>
-        <Analytics />
-      </body>
+    <html lang="en" data-theme="light" suppressHydrationWarning className={`${dmSans.variable} ${geistMono.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
+      </head>
+      <body><SiteShell>{children}</SiteShell></body>
     </html>
   );
 }

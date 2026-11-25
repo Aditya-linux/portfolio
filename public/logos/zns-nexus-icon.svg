@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <rect width="160" height="160" fill="#fff"/>
+  <g transform="translate(8 16)" fill="#000">
+    <circle cx="31" cy="56" r="24"/>
+    <circle cx="111" cy="26" r="15"/>
+    <circle cx="103" cy="94" r="13"/>
+    <g fill="none" stroke="#000" stroke-width="4" stroke-linecap="butt">
+      <path d="M43 24C55 11 74 8 94 15"/>
+      <path d="M124 46C130 65 126 79 117 88"/>
+      <path d="M37 91C54 111 73 117 86 108"/>
+    </g>
+  </g>
+</svg>
